@@ -27,26 +27,27 @@ class MeetingIndicator(object):
 
     def __init__(self, ip):
         self.nl = Nanoleaf(ip)
+        self.color = GREEN  # something arbritary
         self.init_time_color_mode = self.nl.get_color_mode()  # can be "hs" or "effect"
         self.init_time_effect = self.nl.get_current_effect()  # "*Solid" or effect
         self.init_time_brightness = self.nl.get_brightness()
 
-    def set_camera_in_use(self):
-        self.nl.set_color(RED)
-
-    def set_no_meeting(self):
-        self.nl.set_color(WHITE)
-
+    def set_color(self, color):
+        print("Changing color:")
+        print(color)
+        self.color = color
+        self.nl.set_color(self.color)
 
 def main():
 
     meeting_indicator = MeetingIndicator(NANOLEAF_IP)
+
     while True:
-        if is_camera_used():
-            meeting_indicator.set_camera_in_use()
-        else:
-            meeting_indicator.set_no_meeting()
-        sleep(2)
+        if is_camera_used() and meeting_indicator.color != YELLOW:
+            meeting_indicator.set_color(YELLOW)
+        elif not is_camera_used() and meeting_indicator.color != WHITE:
+            meeting_indicator.set_color(WHITE)
+        sleep(1)
 
 
 if __name__ == "__main__":
